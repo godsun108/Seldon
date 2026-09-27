@@ -72,6 +72,14 @@ def main():
             records.append({"cutoff":cur["cutoff"],"p_higher":p,"actual_higher":y,"brier":(p-y)**2,"historical_p":hist,"historical_brier":(hist-y)**2,"persistence_p":0.5,"persistence_brier":0.25})
         ev=[r for r in records if r["cutoff"]>=EVAL_START]
         results[label]={"evaluation":summarize(ev),"records":ev}
+    feature_rows=[]
+    key="outcome_12m"
+    for i in range(12,len(states)):
+        train=[r for r in states[:i] if key in r]
+        if len(train)<K: continue
+        cur=states[i]
+        feature_rows.append({"macro_as_of":cur["cutoff"],"target":"UNRATE higher 12m","probability":p_analogue(train,cur,key),"n_train":len(train),"vintage_safe":True,"status":"RESEARCH_FEATURE_ONLY"})
+    Path("artifacts/seldon_macro_feature_12m.json").write_text(json.dumps({"schema":"seldon.macro.feature.12m.v1","source_experiment":"experiment_004","rows":feature_rows},indent=2)+"\\n")
     result={"schema":"seldon.experiment.004.v1","status":"FROZEN_BEFORE_SCORING","predefined":{"target":"UNRATE higher at each horizon","horizons":HORIZONS,"features":["UNRATE level","CPIAUCSL 12m change","FEDFUNDS level"],"cutoff_frequency":"quarterly","k":K,"evaluation_start":EVAL_START,"baselines":["expanding historical frequency","p=0.5 persistence/null"],"metrics":["Brier score","Brier skill","calibration MAE"]},"vintage_safe":True,"results":results}
     Path("artifacts").mkdir(exist_ok=True); Path("artifacts/experiment_004.json").write_text(json.dumps(result,indent=2)+"\n")
     print(json.dumps({"schema":result["schema"],"status":result["status"],"predefined":result["predefined"],"vintage_safe":True,"scores":{k:v["evaluation"] for k,v in results.items()}},indent=2))
