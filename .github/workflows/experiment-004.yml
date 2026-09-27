@@ -1,0 +1,28 @@
+name: Seldon Experiment 004
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "experiments/fred_macro_004.py"
+      - "seldon/fred.py"
+      - ".github/workflows/experiment-004.yml"
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run frozen adversarial battery
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: PYTHONPATH=. python experiments/fred_macro_004.py
+      - name: Preserve Experiment 004 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: seldon-experiment-004
+          path: artifacts/experiment_004.json
+          retention-days: 30
