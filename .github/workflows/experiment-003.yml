@@ -1,0 +1,28 @@
+name: Seldon Experiment 003
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "experiments/fred_macro_003.py"
+      - "seldon/fred.py"
+      - ".github/workflows/experiment-003.yml"
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run frozen temporal replication
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: PYTHONPATH=. python experiments/fred_macro_003.py
+      - name: Preserve Experiment 003 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: seldon-experiment-003
+          path: artifacts/experiment_003.json
+          retention-days: 30
