@@ -7,7 +7,7 @@ Predefined before scoring:
 - k: 7 nearest historical analogues
 - Evaluation: chronological expanding window; report 2015+ holdout separately
 """
-import json
+import json, time
 from pathlib import Path
 from statistics import mean
 from seldon.fred import vintage_as_known
@@ -30,7 +30,10 @@ def yoy(p):
     a,b=x[-13][1],x[-1][1]
     return b/a-1 if a else 0.0
 def state(c):
-    p={k:vintage_as_known(s,c,observation_start="1998-01-01") for k,s in SERIES.items()}
+    p={}
+    for k,s in SERIES.items():
+        p[k]=vintage_as_known(s,c,observation_start="1998-01-01")
+        time.sleep(0.35)
     return {"cutoff":c,"unemployment":latest(p["unemployment"]),"cpi_yoy":yoy(p["cpi"]),"fed_funds":latest(p["fed_funds"])}
 def p_analogue(train,cur):
     fs=("unemployment","cpi_yoy","fed_funds"); scales={}
