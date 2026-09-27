@@ -1,0 +1,27 @@
+name: Seldon Experiment 002
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'experiments/fred_macro_002.py'
+      - '.github/workflows/experiment-002.yml'
+permissions:
+  contents: read
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    env:
+      FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run quarterly frozen macro experiment
+        run: PYTHONPATH=. python experiments/fred_macro_002.py
+      - name: Preserve Experiment 002 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: seldon-experiment-002
+          path: artifacts/experiment_002.json
+          retention-days: 30
