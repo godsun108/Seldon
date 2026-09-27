@@ -2,6 +2,11 @@ name: FRED vintage smoke test
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'seldon/fred.py'
+      - 'experiments/fred_vintage_smoke.py'
+      - '.github/workflows/fred-vintage.yml'
   schedule:
     - cron: '17 6 * * 1'
 
