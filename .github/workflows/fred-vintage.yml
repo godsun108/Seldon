@@ -30,7 +30,7 @@ jobs:
             exit 1
           fi
       - name: Pull time-locked FRED/ALFRED macro sample
-        run: python experiments/fred_vintage_smoke.py
+        run: PYTHONPATH=. python experiments/fred_vintage_smoke.py
       - name: Upload non-secret evidence artifact
         uses: actions/upload-artifact@v4
         with:
