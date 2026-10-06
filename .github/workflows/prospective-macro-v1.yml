@@ -1,0 +1,29 @@
+name: Seldon Prospective Macro v1
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 22 * * 1-5'
+  push:
+    paths:
+      - "experiments/prospective_macro_v1.py"
+      - "seldon/fred.py"
+      - ".github/workflows/prospective-macro-v1.yml"
+permissions:
+  contents: read
+jobs:
+  feature:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Generate vintage-safe prospective macro feature
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: PYTHONPATH=. python experiments/prospective_macro_v1.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seldon-prospective-macro-v1
+          path: artifacts/seldon_prospective_macro_12m.json
+          retention-days: 90
