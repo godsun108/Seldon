@@ -61,3 +61,22 @@ inputs must result in an explicit unavailable/uncertain state, not a confident
 guess. Paper results must be labeled simulated and must include fees, spread,
 slippage, and fill assumptions. Forecasts are opinions under uncertainty, not
 guarantees or personalized financial advice.
+
+
+## Research brief contract (added in v1)
+
+`seldon.research` defines an evidence-carrying brief for Genesis:
+
+- Instrument, analysis timestamp, horizon, stance, and a separately labeled
+  confidence estimate.
+- Explicit data status: fresh, delayed, stale, or unknown.
+- Evidence claims with source names and observation timestamps.
+- Bull, base, and bear scenarios with probabilities summing to one,
+  expected-return estimates, rationale, catalysts, and invalidation conditions.
+- Key risks, overall thesis invalidation, and limitations.
+
+`validate_research_brief()` checks completeness, probability arithmetic, finite
+numeric values, allowed labels, and that evidence is not timestamped after the
+brief. It cannot independently authenticate a provider or prove a claim true;
+that remains the responsibility of the data-ingestion and evidence-verification
+layers. "Fresh" must never be assigned without a separate freshness policy.
