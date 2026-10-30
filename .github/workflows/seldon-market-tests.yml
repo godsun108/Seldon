@@ -1,0 +1,25 @@
+name: Seldon Market Adapter Tests
+
+on:
+  push:
+    branches: [main, genesis/market-intelligence-v1]
+    paths:
+      - "seldon/**"
+      - "tests/**"
+      - ".github/workflows/seldon-market-tests.yml"
+  pull_request:
+    paths:
+      - "seldon/**"
+      - "tests/**"
+      - ".github/workflows/seldon-market-tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run standard-library test suite
+        run: python -m unittest discover -s tests -v
